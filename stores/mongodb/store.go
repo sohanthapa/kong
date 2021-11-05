@@ -1,43 +1,50 @@
 package mongostore
 
-// import "log"
+import (
+	"context"
+	"log"
+	"time"
 
-// // Store contains a DatabaseHelper
-// type Store struct {
-// 	db mongodb.DatabaseHelper
-// }
+	"kong/data"
 
-// // New createa new new store connected to the given MongoDB connection URi
-// func New(connURI string) (*Store, error) {
-// 	dbh, err := mongodb.NewDatabaseHelperFromURI(connURI)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
 
-// 	return &Store{db: dbh}, nil
-// }
+func New() *mongo.Client {
+	clientOptions := options.Client().ApplyURI("mongodb+srv://testdb:test@cluster0.zdhnz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return client
+}
 
-// // NewDatabaseHelperFromURI returns a new DatabaseHelper from a URI
-// func NewDatabaseHelperFromURI(connURI string) (DatabaseHelper, error) {
-// 	mcs, err := connstring.Parse(connURI)
-// 	if err != nil {
-// 		log.Printf("Error parsing MongoDB url: %s", err)
-// 		return nil, err
-// 	}
+func Initialize(client *mongo.Client) {
+	db := client.Database("testdb")
+	serviceCollection := db.Collection("services")
+	versionCollection := db.Collection("versions")
 
-// 	client, err := NewClient(options.Client().ApplyURI(connURI))
-// 	if err != nil {
-// 		log.Printf("Error creating MongoDB client: %s", err)
-// 		return nil, err
-// 	}
-// 	err = client.Connect()
-// 	if err != nil {
-// 		log.Printf("Unable to connect to MongoDB: %s", err)
-// 		return nil, err
-// 	}
-// 	log.Printf("Connected to to MongoDB: %s", mcs.AppName)
+	//populate versions into the database
+	for _, version := range data.VersionList {
+		err := CreateVersion(versionCollection, &version)
+		// log the error but continue to insert other version from the list
+		if err != nil {
+			log.Printf("fail to insert version %s", version.ID)
+			continue
+		}
+	}
 
-// 	db := client.Database(mcs.Database)
+	//populate services into the database
+	for _, service := range data.ServiceList {
+		err := CreateService(serviceCollection, &service)
+		// log the error but continue to insert other service from the list
+		if err != nil {
+			log.Printf("fail to insert service %s", service.ID)
+			continue
+		}
+	}
 
-// 	return db, nil
-// }
+}

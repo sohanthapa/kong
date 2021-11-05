@@ -11,6 +11,10 @@ const (
 
 // initRoutes initializes the routes for the router
 func (s *Server) initRoutes() {
-	s.Router = chi.NewRouter()
+
+	// private routes
+	s.Router.Group(func(r chi.Router) {
+		r.With().Get(apiServiceID, s.handleGETService)
+	})
 
 }
