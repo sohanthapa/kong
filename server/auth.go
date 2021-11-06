@@ -6,6 +6,22 @@ import (
 	"net/http"
 )
 
+// AuthorizeUser validates that the user information that came in via the function parameter.
+//If the user is not found, 403 is returned;
+func AuthorizeUser(u models.User) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		fn := func(w http.ResponseWriter, r *http.Request) {
+			if !u.CheckUserExist(data.UserList) {
+				http.Error(w, "user not found", http.StatusForbidden)
+				return
+			}
+			next.ServeHTTP(w, r)
+
+		}
+		return http.HandlerFunc(fn)
+	}
+}
+
 // RequirePermission handles checking if user has proper permissions to access the handler
 func RequirePermission(p string, userID string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {

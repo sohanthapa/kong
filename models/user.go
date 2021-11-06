@@ -16,3 +16,13 @@ func (user *User) HasPermission(perm string) bool {
 	}
 	return false
 }
+
+//CheckUserExist checks if the user exists from the list
+func (user *User) CheckUserExist(userList []User) bool {
+	for _, u := range userList {
+		if user.ID == u.ID {
+			return true
+		}
+	}
+	return false
+}

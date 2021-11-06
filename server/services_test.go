@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-//NOTE: The below tests are just the skeleton of how we are going to get the functions in
-//       server/server.go. All the tests below are going to fail because we have not mocked
+//NOTE: The below tests, which are commented, are just the skeleton of how we are going to get the functions in
+//       server/server.go. All the tests below are FAILING because we have not mocked
 //       the database calls which are called in the handle function.
 
 // TestHandleGETServices tests the functionality for handleGETServices function
