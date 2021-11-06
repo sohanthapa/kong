@@ -17,17 +17,20 @@ const (
 )
 
 func main() {
-	server := &server.Server{
-		Router: chi.NewRouter(),
-	}
-	//call to initialize server
-	server.Initialize()
 
 	//call to initialize mongodb connnection client
-	client := mongostore.New()
+	db := mongostore.New()
 
-	//initialize the data in db
-	mongostore.Initialize(client)
+	//populate the data in db
+	mongostore.Populate(db)
+
+	server := &server.Server{
+		Router:     chi.NewRouter(),
+		MongoStore: db,
+	}
+
+	//call to initialize server
+	server.Initialize()
 
 	httpServer := &http.Server{
 		Addr:    fmt.Sprintf(":%d", defaultPort),

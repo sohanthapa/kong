@@ -1,6 +1,9 @@
 package server
 
 import (
+	"kong/data"
+	"kong/models"
+
 	"github.com/go-chi/chi"
 )
 
@@ -14,7 +17,12 @@ func (s *Server) initRoutes() {
 
 	// private routes
 	s.Router.Group(func(r chi.Router) {
-		r.With().Get(apiServiceID, s.handleGETService)
+
+		//RequirePermission is the middleware which checks the authorization for each
+		// handler func
+
+		r.With(RequirePermission(models.PermGetService, data.User1.ID)).Get(apiServiceID, s.handleGETService)
+		r.With(RequirePermission(models.PermGetServiceList, data.User2.ID)).Get(apiServices, s.handleGETServices)
 	})
 
 }

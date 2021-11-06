@@ -11,7 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func New() *mongo.Client {
+//New initializes a new mongo db based on the URI and database name
+// NOTE: for the simplicity of this exercise I choose to hardcode the URI and database name
+func New() *mongo.Database {
 	clientOptions := options.Client().ApplyURI("mongodb+srv://testdb:test@cluster0.zdhnz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -19,11 +21,12 @@ func New() *mongo.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return client
+	db := client.Database("testdb")
+	return db
 }
 
-func Initialize(client *mongo.Client) {
-	db := client.Database("testdb")
+// Populate function populates the data (services, versions) into the db
+func Populate(db *mongo.Database) {
 	serviceCollection := db.Collection("services")
 	versionCollection := db.Collection("versions")
 
