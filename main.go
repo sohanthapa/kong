@@ -24,6 +24,10 @@ func main() {
 	//populate the data in db
 	mongostore.Populate(db)
 
+	//create index for both the collections to use id as unique value
+	mongostore.CreateIndex(db, "id", "services")
+	mongostore.CreateIndex(db, "id", "versions")
+
 	server := &server.Server{
 		Router:     chi.NewRouter(),
 		MongoStore: db,

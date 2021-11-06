@@ -2,11 +2,13 @@ package mongostore
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
 	"kong/data"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -50,4 +52,30 @@ func Populate(db *mongo.Database) {
 		}
 	}
 
+}
+
+// CreateIndex - creates an index for a specific field in a collection
+func CreateIndex(db *mongo.Database, fieldName, collection string) bool {
+
+	// 1. Lets define the keys for the index we want to create
+	mod := mongo.IndexModel{
+		Keys:    bson.M{fieldName: 1}, // index in ascending order or -1 for descending order
+		Options: options.Index().SetUnique(true),
+	}
+
+	// 2. Create the context for this operation
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// 3. Connect to the database and access the collection
+	col := db.Collection(collection)
+
+	// 4. Create a single index
+	_, err := col.Indexes().CreateOne(ctx, mod)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+
+	return true
 }
