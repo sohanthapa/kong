@@ -7,10 +7,10 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-
-	"go.mongodb.org/mongo-driver/bson"
 )
 
+// handleGETService handles the GET request for endpoint /services/{serviceID} and returns
+// the requested service based on the serviceID
 func (s *Server) handleGETService(w http.ResponseWriter, r *http.Request) {
 	serviceID := chi.URLParam(r, "serviceID")
 
@@ -32,18 +32,12 @@ func (s *Server) handleGETServices(w http.ResponseWriter, r *http.Request) {
 	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 	sort := r.URL.Query().Get("sort") //by default asc
 
-	//by default find all the services
-	filter := bson.M{}
-	if len(nameValue) > 0 {
-		filter = bson.M{"name": nameValue}
-	}
-
 	//setting the url query parameter
 	slQuery := models.ServiceListQuery{
 		Limit:  int64(limit),
 		Offset: int64(offset),
 		Sort:   sort,
-		Filter: filter,
+		Filter: nameValue,
 	}
 
 	services, err := mongostore.ListServices(s.MongoStore, slQuery)

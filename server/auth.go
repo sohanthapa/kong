@@ -8,6 +8,8 @@ import (
 
 // AuthorizeUser validates that the user information that came in via the function parameter.
 //If the user is not found, 403 is returned;
+// NOTE: for the simplicity of this exercise I choose to use in memory users to show the
+// authentication for the logged in user
 func AuthorizeUser(u models.User) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {

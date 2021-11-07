@@ -39,7 +39,12 @@ func ListServices(db *mongo.Database, slQuery models.ServiceListQuery) ([]models
 	if slQuery.Sort == "desc" {
 		findOptions.SetSort(bson.D{{"name", -1}})
 	}
-	cursor, err := serviceCollection.Find(context.Background(), slQuery.Filter, findOptions)
+	// by default find all the services
+	filter := bson.M{}
+	if len(slQuery.Filter) > 0 {
+		filter = bson.M{"name": slQuery.Filter}
+	}
+	cursor, err := serviceCollection.Find(context.Background(), filter, findOptions)
 	if err != nil {
 		return nil, err
 	}
