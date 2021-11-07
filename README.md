@@ -29,6 +29,9 @@ I have made below assumptions for this project: <br />
 &emsp;&emsp;&emsp;&emsp; they will provide the offset and limit value to get how many documents they want as per their requirement.
 &emsp;&emsp;&emsp;&emsp; BE does not have any business logic to figure the offset and limit.
 
+## Notes
+I have added few comments with NOTES in the code to clarify few things and why I choose to code it that way.
+
 ## Screenshots 
 Below are few screenshots of the results of the APIs using Postman:
 ![image](https://user-images.githubusercontent.com/7494475/140621180-c1c4e97c-80e0-43a3-ad06-fae888ebdc19.png)
