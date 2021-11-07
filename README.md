@@ -30,7 +30,9 @@ I have made below assumptions for this project: <br />
 &emsp;&emsp;&emsp;&emsp; BE does not have any business logic to figure the offset and limit.
 
 ## Notes
-I have added few comments with NOTES in the code to clarify few things and why I choose to code it that way.
+I have added few comments with NOTES in the code to clarify few things and why I choose to code it that way. <br />
+Also, for the simplicity of this exercise I choose not unit test database functions because I need to mock the database call which <br />
+will involve more work. I have stated this in my code.
 
 ## Screenshots 
 Below are few screenshots of the results of the APIs using Postman:
